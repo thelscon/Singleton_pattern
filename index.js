@@ -31,7 +31,7 @@ class Logger {
         if (!Logger.#exemplar) {
             Logger.#exemplar = new Logger();
         }
-        return Logger.#exemplar;
+        return this.#exemplar;
     }
     writeNotificationToLog(example, notification) {
         switch (true) {
@@ -60,9 +60,8 @@ class Logger {
         }
     }
 }
-const logger = Logger.instantiation();
 class Example {
-    example(log) {
+    example(log, logger) {
         logger.writeNotificationToLog(this, log);
     }
 }
@@ -75,12 +74,13 @@ const isSecondExample = (type) => type instanceof SecondExample;
 class ThirdExample extends Example {
 }
 const isThirdExample = (type) => type instanceof ThirdExample;
+const logger = Logger.instantiation();
 const first = new FirstExample();
-first.example('first');
+first.example('first', Logger.instantiation());
 const second = new SecondExample();
-second.example('second');
+second.example('second', Logger.instantiation());
 const third = new ThirdExample();
-third.example('third');
-console.log(logger.viewingLogs(first));
-console.log(logger.viewingLogs(second));
+third.example('third', Logger.instantiation());
+console.log(Logger.instantiation().viewingLogs(first));
+console.log(Logger.instantiation().viewingLogs(second));
 console.log(logger.viewingLogs(third));

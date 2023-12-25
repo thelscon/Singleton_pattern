@@ -46,7 +46,7 @@ class Logger implements ILogger {
             Logger.#exemplar = new Logger ()
         }
 
-        return Logger.#exemplar
+        return this.#exemplar
     }
 
     writeNotificationToLog (example : IExample , notification : string) {
@@ -77,13 +77,11 @@ class Logger implements ILogger {
     }
 }
 
-const logger = Logger.instantiation ()
-
 interface IExample {
-    readonly example : (log : string) => void
+    readonly example : (log : string , logger : ILogger) => void
 }
 abstract class Example implements IExample {
-    example (log : string) {
+    example (log : string , logger : ILogger) {
         logger.writeNotificationToLog (this , log)
     }
 }
@@ -96,16 +94,18 @@ const isSecondExample = (type : IExample) : type is SecondExample => type instan
 class ThirdExample extends Example {}
 const isThirdExample = (type : IExample) : type is ThirdExample => type instanceof ThirdExample
 
+const logger : ILogger = Logger.instantiation ()
+
 const first = new FirstExample ()
-first.example ('first')
+first.example ('first' , Logger.instantiation ())
 
 const second = new SecondExample ()
-second.example ('second')
+second.example ('second' , Logger.instantiation ())
 
 const third = new ThirdExample ()
-third.example ('third')
+third.example ('third' , Logger.instantiation ())
 
 
-console.log (logger.viewingLogs (first))
-console.log (logger.viewingLogs (second))
+console.log (Logger.instantiation ().viewingLogs (first))
+console.log (Logger.instantiation ().viewingLogs (second))
 console.log (logger.viewingLogs (third))
